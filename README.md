@@ -1,1 +1,1 @@
-# alison-project-android
+# The Alison Project Android Application
