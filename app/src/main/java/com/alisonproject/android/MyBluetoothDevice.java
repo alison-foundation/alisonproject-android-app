@@ -17,7 +17,7 @@ public class MyBluetoothDevice {
         if(device != null)
         {
             this.device = device;
-            this.name = device.getName();
+            this.name = (device.getName() == null )? "---" : device.getName();
             this.address = device.getAddress();
 //            this.handler = handler;
         }

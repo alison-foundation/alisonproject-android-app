@@ -196,10 +196,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void appendNewDevice(BluetoothDevice device){
-            devices.add(new MyBluetoothDevice(device));
-//
-        mAdapter = new BluetoothDeviceAdapter(devices);
-        recyclerView.setAdapter(mAdapter);
+
+        MyBluetoothDevice newDevice = new MyBluetoothDevice(device);
+        if(!devices.contains(newDevice)) {
+            devices.add(newDevice);
+            mAdapter = new BluetoothDeviceAdapter(devices);
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
