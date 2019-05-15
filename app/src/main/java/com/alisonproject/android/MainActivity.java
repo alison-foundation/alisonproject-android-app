@@ -54,23 +54,16 @@ public class MainActivity extends AppCompatActivity {
                         BluetoothAdapter.ERROR);
                 switch (state) {
                     case BluetoothAdapter.STATE_OFF:
-                        // Bluetooth has been turned off;
-//                        checkedStateChangedByCode = true;
-//                        switchItem.setChecked(false);
                         mTextMessage.setText("Bluetooth désactivé");
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-                        // Bluetooth is turning off;
+                        // Bluetooth is turning off
                         mTextMessage.setText("Désactivation en cours");
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        // Bluetooth has been on
-//                        checkedStateChangedByCode = true;
-//                        switchItem.setChecked(true);
                         mTextMessage.setText("Bluetooth actif");
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        // Bluetooth is turning on
                         mTextMessage.setText("Bluetooth en cours d'activation");
                         break;
                 }
@@ -138,12 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         searchButton.setOnClickListener(listener -> {
             fetchPairedDevices();
-            if(!bluetoothAdapter.startDiscovery()){
-                Log.d("##", "Nope");
-            }
-            else{
-                Log.d("##", "Yep");
-            }
+            if(!bluetoothAdapter.startDiscovery()) Log.d("##", "Nope");
+            else Log.d("##", "Yep");
         });
 
         if(!isBluetoothSupported()){
@@ -166,9 +155,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter
-
-//        mAdapter = new BluetoothDeviceAdapter(devices);
-//        recyclerView.setAdapter(mAdapter);
     }
 
     private boolean isBluetoothSupported(){
@@ -176,9 +162,6 @@ public class MainActivity extends AppCompatActivity {
             // Device doesn't support Bluetooth
             Toast.makeText(getApplicationContext(), "Bluetooth non supporté", Toast.LENGTH_SHORT).show();
             mTextMessage.setText("non supporté");
-        }
-        else{
-
         }
         return bluetoothAdapter != null;
     }
@@ -200,10 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (pairedDevices.size() > 0) {
             // There are paired devices. Get the name and address of each paired device.
-            //devices.clear();
             for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
                 MyBluetoothDevice newDevice = new MyBluetoothDevice(device);
                 if(!devices.contains(newDevice))
                     devices.add(newDevice);
