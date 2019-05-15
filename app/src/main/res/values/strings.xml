@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">Alison Project Android App</string>
+    <string name="app_name">Alison App</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="action_bar_switch">Switch</string>
+    <string name="connect_to_device">Connect</string>
 </resources>
