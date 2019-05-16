@@ -1,32 +1,36 @@
 package com.alisonproject.android;
 
 import android.bluetooth.BluetoothDevice;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.alisonproject.android.BlutetoothHelpers.MessageConstants;
 
 
 public class MyBluetoothDevice {
     private String name;
     private String address;
-//    private Handler handler = null;
+    private Handler handler = null;
     private BluetoothDevice device = null;
 
-    public MyBluetoothDevice(BluetoothDevice device)//, Handler handler)
+    public MyBluetoothDevice(BluetoothDevice device, Handler handler)
     {
         if(device != null)
         {
             this.device = device;
             this.name = (device.getName() == null )? "---" : device.getName();
             this.address = device.getAddress();
-//            this.handler = handler;
+            this.handler = handler;
         }
         else
         {
             this.device = device;
             this.name = "None";
             this.address = "";
-//            this.handler = handler;
+            this.handler = handler;
         }
 
         // TODO
@@ -68,6 +72,10 @@ public class MyBluetoothDevice {
     {
         // TODO
         Log.d("##", "connect to [" + name + "]   " + address);
+        Message msg = handler.obtainMessage();
+        msg.what = MessageConstants.CONNECT_DEVICE;
+        msg.obj = device;
+        msg.sendToTarget();
     }
 
     public boolean disconnect()
