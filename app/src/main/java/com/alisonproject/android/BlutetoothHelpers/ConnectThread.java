@@ -41,6 +41,9 @@ public class ConnectThread extends Thread {
         bluetoothAdapter.cancelDiscovery();
 
         Log.d(TAG, "Socket's connecting...");
+        Message msg = handler.obtainMessage();
+        msg.what = MessageConstants.DEVICE_CONNECTING;
+        msg.sendToTarget();
         try {
             // Connect to the remote device through the socket. This call blocks
             // until it succeeds or throws an exception.
@@ -58,11 +61,12 @@ public class ConnectThread extends Thread {
 
         // The connection attempt succeeded. Perform work associated with
         // the connection in a separate thread.
-        Message msg = handler.obtainMessage();
+        msg = handler.obtainMessage();
         msg.what = MessageConstants.DEVICE_SOCKET;
         msg.obj = mmSocket;
         msg.sendToTarget();
         Log.d("##ConnectThread", "Successfully Connected to device " + mmDevice.getName() + "|" + mmDevice.getAddress());
+        return;
     }
 
     // Closes the client socket and causes the thread to finish.

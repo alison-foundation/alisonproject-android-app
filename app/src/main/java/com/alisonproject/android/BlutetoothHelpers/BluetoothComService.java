@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class BluetoothComService extends Thread {
     private final BluetoothSocket mmSocket;
@@ -15,6 +16,7 @@ public class BluetoothComService extends Thread {
     private final OutputStream mmOutStream;
     private byte[] mmBuffer; // mmBuffer store for the stream
     String TAG = "##commService";
+    private StringBuilder received;
     private Handler handler;
 
     public BluetoothComService(BluetoothSocket socket, Handler handler) {
@@ -22,7 +24,7 @@ public class BluetoothComService extends Thread {
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
         this.handler = handler;
-
+        this.received = new StringBuilder();
         // Get the input and output streams; using temp objects because
         // member streams are final.
         try {
@@ -51,13 +53,20 @@ public class BluetoothComService extends Thread {
             try {
                 // Read from the InputStream.
                 numBytes = mmInStream.read(mmBuffer);
-                // Send the obtained bytes to the UI activity.
-                Message readMsg = handler.obtainMessage(
-                        MessageConstants.MESSAGE_READ, numBytes, -1,
-                        new String(mmBuffer));
-                readMsg.sendToTarget();
+                byte[] data = Arrays.copyOf(mmBuffer, numBytes);
+
+                received.append(new String(data));
+                if('.' == received.charAt(received.length() - 1)){
+
+                    // Send the obtained bytes to the UI activity.
+                    Message readMsg = handler.obtainMessage(MessageConstants.MESSAGE_READ, numBytes, -1, received.toString());
+                    received.setLength(0);
+                    readMsg.sendToTarget();
+                }
+//                Log.d("##recu", received.toString());
             } catch (IOException e) {
                 Log.d(TAG, "Input stream was disconnected", e);
+                handler.obtainMessage(MessageConstants.DEVICE_DISCONNECTED).sendToTarget();
                 break;
             }
         }
@@ -66,9 +75,9 @@ public class BluetoothComService extends Thread {
     // Call this from the main activity to send data to the remote device.
     public void send(String msg) {
         try {
-            byte[] bytes = msg.getBytes();
+            //1024 max
+            byte[] bytes = (msg + ".").getBytes();
             mmOutStream.write(bytes);
-
 
             // Share the sent message with the UI activity.
             Message writtenMsg = handler.obtainMessage(
@@ -93,4 +102,18 @@ public class BluetoothComService extends Thread {
             Log.e(TAG, "Could not close the connect socket", e);
         }
     }
+
+//
+//    .
+//            receivedMsg.append(new String(data));
+//
+//                if(receivedMsg.toString().endsWith(".")) {
+//        Message readMsg = handler.obtainMessage(
+//                MessageConstants.MESSAGE_READ, numBytes, -1,
+//                new String(receivedMsg.toString()));
+//
+////                    Log.d("##recu", new String(data));
+//        readMsg.sendToTarget();
+//        receivedMsg = new StringBuilder();
+//    }
 }

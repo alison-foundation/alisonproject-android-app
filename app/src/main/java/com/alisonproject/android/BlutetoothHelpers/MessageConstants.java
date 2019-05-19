@@ -9,4 +9,7 @@ public interface MessageConstants {
     int SEND_MESSAGE = 4;
     int CONNECT_DEVICE = 5;
     int DISCONNECT_DEVICE = 6;
+    int DEVICE_CONNECTING = 7;
+    int DEVICE_CONNECTED = 8;
+    int DEVICE_DISCONNECTED = 9;
 }

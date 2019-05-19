@@ -1,13 +1,17 @@
 package com.alisonproject.android;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelUuid;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.alisonproject.android.BlutetoothHelpers.MessageConstants;
+
+import java.lang.reflect.Method;
 
 
 public class MyBluetoothDevice {
@@ -71,6 +75,18 @@ public class MyBluetoothDevice {
     public void connect()
     {
         // TODO
+        Method getUuidsMethod = null;
+        try {
+            getUuidsMethod = BluetoothDevice.class.getDeclaredMethod("getUuids", null);
+            ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(device, null);
+
+            for (ParcelUuid uuid: uuids) {
+                Log.d("##uuid", "UUID: " + uuid.getUuid().toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("##uuid", "UUID: Exception " + e.getMessage());
+        }
         Log.d("##", "connect to [" + name + "]   " + address);
         Message msg = handler.obtainMessage();
         msg.what = MessageConstants.CONNECT_DEVICE;

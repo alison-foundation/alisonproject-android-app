@@ -16,20 +16,35 @@ import java.util.Observable;
 import java.util.UUID;
 
 public class BluetoothConnManager {
+    private static BluetoothConnManager instance = null;
     protected BluetoothAdapter bluetoothAdapter;
     protected BluetoothSocket deviceSocket;
-    protected final UUID MY_UUID;
+    public static UUID MY_UUID;
     protected AcceptThread acceptThread;
     private  BluetoothComService comService;
     protected Handler handler = new Handler(this::handleServiceMsg);
+    protected static Handler UIhandler;
 
-
-    public BluetoothConnManager(BluetoothAdapter bluetoothAdapter, UUID uuid){
-        this.bluetoothAdapter = bluetoothAdapter;
-        MY_UUID = uuid;
+    private BluetoothConnManager(){
+        this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         acceptThread = new AcceptThread();
         deviceSocket = null;
         comService = null;
+    }
+
+    public static void setMyUuid(UUID uuid){
+        MY_UUID = uuid;
+    }
+
+    public static void setUIhandler(Handler uiHandler){
+        UIhandler = uiHandler;
+    }
+
+    public static BluetoothConnManager getInstance(){
+        if(instance == null){
+            instance = new BluetoothConnManager();
+        }
+        return instance;
     }
 
 
@@ -39,10 +54,20 @@ public class BluetoothConnManager {
                 Log.i("##send_ok", (String)msg.obj);
                 return true;
             case MessageConstants.MESSAGE_TOAST:
-                Log.i("##send_ailed", (String)msg.obj);
+                Log.i("##send_failed", (String)msg.obj);
+                return true;
+            case MessageConstants.MESSAGE_READ:
+                Log.i("##read", (String)msg.obj);
+                UIhandler.obtainMessage(MessageConstants.MESSAGE_READ, (String)msg.obj).sendToTarget();
                 return true;
             case MessageConstants.DEVICE_SOCKET:
                 manageConnectedSocket((BluetoothSocket)msg.obj);
+                return true;
+            case MessageConstants.DEVICE_CONNECTING:
+                UIhandler.obtainMessage(MessageConstants.DEVICE_CONNECTING).sendToTarget();
+                return true;
+            case MessageConstants.DEVICE_DISCONNECTED:
+                UIhandler.obtainMessage(MessageConstants.DEVICE_DISCONNECTED).sendToTarget();
                 return true;
             default:
                 Log.d("##", "");
@@ -63,6 +88,8 @@ public class BluetoothConnManager {
         deviceSocket = socket;
         comService = new BluetoothComService(deviceSocket, handler);
         comService.start();
+        Message msg = UIhandler.obtainMessage(MessageConstants.DEVICE_CONNECTED);
+        msg.sendToTarget();
     }
 
     public void connectTo(BluetoothDevice device) {

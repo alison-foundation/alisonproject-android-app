@@ -8,5 +8,9 @@
     <string name="bluetooth_activated">Bluetooth Activated</string>
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
     <string name="bluetooth_not_supported">Bluetooth not supported</string>
-    <string name="app_uuid">0000112f-0000-1000-8000-00805f9b34fb</string>
+    <string name="spp_uuid">00001101-0000-1000-8000-00805F9B34FB</string>
+    <string name="app_uuid_old">0000112f-0000-1000-8000-00805f9b34fb</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
