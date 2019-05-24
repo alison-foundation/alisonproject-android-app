@@ -9,12 +9,11 @@ The application be soon available on the Google PlayStore.
 
 ### Usage
 + In the first screen of the application you have to find the raspberry device to which you want to connect
-![find device](https://github.com/Faymir/alison-project-android-app/blob/master/find_device.jpeg)
+<img src="find_device.jpeg" alt="find device" width="200" height="390"/>
 
 + Then clik connect
 
-![start_recording](https://github.com/Faymir/alison-project-android-app/blob/master/start_record.jpeg)
-
+<img src="start_record.jpeg" alt="start_recording screenshot" width="200" height="390"/>
 
 + After that you can start recoding the sound you want to recognize by clicking the start record icon
 + When you finish you can click it again to stop recording
