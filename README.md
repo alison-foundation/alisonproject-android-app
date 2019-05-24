@@ -8,7 +8,14 @@ You can dowload the android application on our website or directly from this git
 The application be soon available on the Google PlayStore.
 
 ### Usage
-//TODO 
++ In the first screen of the application you have to find the raspberry device to which you want to connect
+TODO: add screenshot
++ Then clik connect
++ After that you can start recoding the sound you want to recognize by clicking the start record icon
++ When you finish you can click it again to stop recording
++ then enter a tag to assciate to the record and select light color to emit when the device recognize the sound.
++ Finally you can click Ok to validate.
+**yeay!🤗 your sound is learned**
 
 ### Prerequisites
 
