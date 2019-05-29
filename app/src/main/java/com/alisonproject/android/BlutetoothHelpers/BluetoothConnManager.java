@@ -12,6 +12,7 @@ import android.util.Log;
 import com.alisonproject.android.R;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -98,7 +99,7 @@ public class BluetoothConnManager {
     }
 
     public void send(String msg){
-        comService.send(msg);
+        Objects.requireNonNull(comService).send(msg);
     }
 
     private class AcceptThread extends Thread {

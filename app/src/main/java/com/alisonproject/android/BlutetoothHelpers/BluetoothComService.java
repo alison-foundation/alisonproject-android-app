@@ -76,7 +76,7 @@ public class BluetoothComService extends Thread {
     public void send(String msg) {
         try {
             //1024 max
-            byte[] bytes = (msg + ".").getBytes();
+            byte[] bytes = msg.getBytes();
             mmOutStream.write(bytes);
 
             // Share the sent message with the UI activity.

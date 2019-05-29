@@ -1,10 +1,17 @@
 package com.alisonproject.android;
 
+import android.animation.ArgbEvaluator;
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -12,12 +19,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alisonproject.android.BlutetoothHelpers.BluetoothConnManager;
 import com.alisonproject.android.BlutetoothHelpers.MessageConstants;
+
+import java.util.Objects;
 
 
 /**
@@ -28,21 +39,20 @@ import com.alisonproject.android.BlutetoothHelpers.MessageConstants;
  * Use the {@link ActionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActionsFragment extends Fragment {
+public class ActionsFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "isRecording";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private TextView responseDisplay;
+    private TextView startRecordTextView;
     private ImageButton startRecord;
-    private ImageButton setNotification;
-    private ImageButton saveRecord;
-    private ImageButton dropRecord;
+    private boolean isRecording = false;
+    ValueAnimator colorAnimation;
+    MediaPlayer mediaPlayerStart;
+    MediaPlayer mediaPlayerStop;
 
     private OnFragmentInteractionListener mListener;
 
@@ -71,29 +81,36 @@ public class ActionsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param isRecording Parameter 1.
      * @return A new instance of fragment ActionsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ActionsFragment newInstance(String param1, String param2) {
+    public static ActionsFragment newInstance(boolean isRecording) {
         ActionsFragment fragment = new ActionsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM1, isRecording);
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * start => commencer
+     * stop => finir
+     * save | tag | color
+     * python -m alison params...
+     * @param savedInstanceState
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            isRecording = getArguments().getBoolean(ARG_PARAM1);
         }
 
         BluetoothConnManager.setUIhandler(conHandler);
+        mediaPlayerStart = MediaPlayer.create(getContext(), R.raw.start_record);
+        mediaPlayerStop = MediaPlayer.create(getContext(), R.raw.stop_record);
     }
 
     @Override
@@ -103,20 +120,68 @@ public class ActionsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_actions, container, false);
 
         if(view instanceof ConstraintLayout){
-            startRecord = view.findViewById(R.id.recordSoundBtn);
-            setNotification = view.findViewById(R.id.notifBtn);
-            saveRecord = view.findViewById(R.id.saveRecordBtn);
-            dropRecord = view.findViewById(R.id.dropRecordBtn);
-
             responseDisplay = view.findViewById(R.id.response_text);
+            startRecordTextView = view.findViewById(R.id.recordSoundTextView);
+            startRecord = view.findViewById(R.id.recordSoundBtn);
 
-            startRecord.setOnClickListener( listener -> BluetoothConnManager.getInstance().send("listen sound | 1"));
-            setNotification.setOnClickListener( listener -> BluetoothConnManager.getInstance().send("set led color | blue"));
-            saveRecord.setOnClickListener( listener -> BluetoothConnManager.getInstance().send("save sound"));
-            dropRecord.setOnClickListener( listener -> BluetoothConnManager.getInstance().send("drop last sound"));
+            startRecord.setOnClickListener( listener -> {
+                if(!isRecording)
+                    startRecording(view);
+                else
+                    stopRecording(view);
+            });
         }
 
         return view;
+    }
+
+    private void startRecording(View view){
+        isRecording = true;
+        BluetoothConnManager.getInstance().send("start");
+        startRecord.setImageDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.ic_mic_stop_record_128dp));
+
+        //animate record button
+        int colorFrom = 255;
+        int colorTo = 20;
+        colorAnimation = ValueAnimator.ofObject(new IntEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(2000); // milliseconds
+        colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnimation.setRepeatCount(ValueAnimator.INFINITE);
+        colorAnimation.addUpdateListener( animator -> startRecord.getDrawable().setAlpha((int) animator.getAnimatedValue()));
+        colorAnimation.start();
+
+        //play sound
+        if(mediaPlayerStop.isPlaying()){
+            mediaPlayerStop.stop();
+            mediaPlayerStop.release();
+            mediaPlayerStop = MediaPlayer.create(getContext(), R.raw.stop_record);
+        }
+        startRecordTextView.setText("Recording...");
+        mediaPlayerStart.start();
+    }
+
+    private void stopRecording(View view){
+        isRecording = false;
+        BluetoothConnManager.getInstance().send("stop");
+        startRecord.setImageDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.ic_mic_start_record_24dp));
+        colorAnimation.cancel();
+
+        //play sound
+        if(mediaPlayerStart.isPlaying()){
+            mediaPlayerStart.stop();
+            mediaPlayerStart.release();
+            mediaPlayerStart = MediaPlayer.create(getContext(), R.raw.start_record);
+        }
+        startRecordTextView.setText("Record");
+        mediaPlayerStop.start();
+        mediaPlayerStop.setOnCompletionListener(l -> {
+            if(l.isPlaying()){
+                l.stop();
+                l.release();
+            }});
+
+        SaveSoundFragment confirmDialog = new SaveSoundFragment();
+        confirmDialog.show(Objects.requireNonNull(getFragmentManager()), "saveSoundFragment");
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -1,33 +1,23 @@
 package com.alisonproject.android;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.Button;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.alisonproject.android.BlutetoothHelpers.BluetoothConnManager;
 import com.alisonproject.android.BlutetoothHelpers.MessageConstants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.lang.reflect.Method;
-import java.util.UUID;
-
-public class MainActivity extends BaseActivity implements ConnectFragment.OnFragmentInteractionListener, ActionsFragment.OnFragmentInteractionListener{
+public class MainActivity extends BaseActivity implements ConnectFragment.OnFragmentInteractionListener, ActionsFragment.OnFragmentInteractionListener, SaveSoundFragment.SaveSoundDialogListener {
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener  = item -> {
@@ -38,11 +28,11 @@ public class MainActivity extends BaseActivity implements ConnectFragment.OnFrag
                         return true;
                     case R.id.navigation_dashboard:
 //                        mTextMessage.setText(R.string.title_dashboard);
-                        BluetoothConnManager.getInstance().send("Dashboard");
+//                        BluetoothConnManager.getInstance().send("Dashboard");
                         return true;
                     case R.id.navigation_notifications:
 //                        mTextMessage.setText(R.string.title_notifications);
-                        BluetoothConnManager.getInstance().send("Notifs");
+//                        BluetoothConnManager.getInstance().send("Notifs");
                         return true;
                 }
                 return false;
@@ -117,10 +107,6 @@ public class MainActivity extends BaseActivity implements ConnectFragment.OnFrag
         transaction.addToBackStack(null);
 //// Commit the transaction
         transaction.commit();
-
-//        Log.d("##", UUID.fromString("OnePlus 6T").toString());
-
-
     }
 
     @Override
@@ -172,5 +158,19 @@ public class MainActivity extends BaseActivity implements ConnectFragment.OnFrag
                 transaction.commit();
             }
         }
+    }
+
+
+
+    @Override
+    public void onDialogPositiveClick(SaveSoundFragment dialog, String tag) {
+        String colorHex = Integer.toHexString(dialog.selectedColor).substring(2);
+        BluetoothConnManager.getInstance().send("save | " + tag + " | " + colorHex);
+        Toast.makeText(getApplicationContext(), "Sound learned", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(SaveSoundFragment dialog) {
+        BluetoothConnManager.getInstance().send("drop");
     }
 }
