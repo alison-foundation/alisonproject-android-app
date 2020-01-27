@@ -2,7 +2,6 @@ package com.alisonproject.android;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+
+import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 
 import java.util.Objects;
@@ -32,13 +33,16 @@ public class SaveSoundFragment extends DialogFragment {
     private ConstraintLayout layout;
     EditText tagIput;
     Button openColorPickerBtn;
-    ColorPicker colorPicker;
+//    ColorPicker colorPicker;
+    ColorPickerDialog colorPickerDialog;
     public int selectedColor;
     public String tag = "";
 
     public void openColorPicker(View listener){
-        colorPicker.show();
-        colorPicker.enableAutoClose();
+//        colorPicker.show();
+//        colorPicker.enableAutoClose();
+        colorPickerDialog.show();
+
     }
 
 
@@ -59,12 +63,23 @@ public class SaveSoundFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        colorPicker= new ColorPicker(Objects.requireNonNull(getActivity()), 20 , 100, 200);
-        colorPicker.setCallback(color -> {
+//        colorPicker= new ColorPicker(Objects.requireNonNull(getActivity()), 20 , 100, 200);
+        colorPickerDialog = ColorPickerDialog.createColorPickerDialog(Objects.requireNonNull(getActivity()));
+        colorPickerDialog.setOnColorPickedListener((color, hexVal) -> {
+            //Your code here
             selectedColor = color;
+            int r = Color.red(color);
+            int g = Color.green(color);
+            int b = Color.blue(color);
             layout.setBackgroundColor(selectedColor);
-            Log.d("##selectedcolor", Integer.toHexString(selectedColor));
+            Log.d("##selectedcolor", "#" + hexVal + " rgb = (" + r + ", " + g + ", " + b + ")"  );
         });
+//        colorPicker.setCallback(color -> {
+//            selectedColor = color;
+//
+//            layout.setBackgroundColor(selectedColor);
+//            Log.d("##selectedcolor", Integer.toHexString(selectedColor));
+//        });
     }
 
     @NonNull

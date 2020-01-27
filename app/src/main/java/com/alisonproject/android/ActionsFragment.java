@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,11 +49,12 @@ public class ActionsFragment extends Fragment  {
 
     private TextView responseDisplay;
     private TextView startRecordTextView;
+    private TextView timerTextView;
     private ImageButton startRecord;
     private boolean isRecording = false;
     ValueAnimator colorAnimation;
-    MediaPlayer mediaPlayerStart;
-    MediaPlayer mediaPlayerStop;
+    //MediaPlayer mediaPlayerStart;
+    //MediaPlayer mediaPlayerStop;
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,8 +111,8 @@ public class ActionsFragment extends Fragment  {
         }
 
         BluetoothConnManager.setUIhandler(conHandler);
-        mediaPlayerStart = MediaPlayer.create(getContext(), R.raw.start_record);
-        mediaPlayerStop = MediaPlayer.create(getContext(), R.raw.stop_record);
+       // mediaPlayerStart = MediaPlayer.create(getContext(), R.raw.start_record);
+       // mediaPlayerStop = MediaPlayer.create(getContext(), R.raw.stop_record);
     }
 
     @Override
@@ -122,6 +124,8 @@ public class ActionsFragment extends Fragment  {
         if(view instanceof ConstraintLayout){
             responseDisplay = view.findViewById(R.id.response_text);
             startRecordTextView = view.findViewById(R.id.recordSoundTextView);
+            timerTextView = view.findViewById(R.id.timerTextView);
+            timerTextView.setText("00:00");
             startRecord = view.findViewById(R.id.recordSoundBtn);
 
             startRecord.setOnClickListener( listener -> {
@@ -144,20 +148,37 @@ public class ActionsFragment extends Fragment  {
         int colorFrom = 255;
         int colorTo = 20;
         colorAnimation = ValueAnimator.ofObject(new IntEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(2000); // milliseconds
+        colorAnimation.setDuration(3000); // milliseconds
         colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
         colorAnimation.setRepeatCount(ValueAnimator.INFINITE);
         colorAnimation.addUpdateListener( animator -> startRecord.getDrawable().setAlpha((int) animator.getAnimatedValue()));
         colorAnimation.start();
 
         //play sound
-        if(mediaPlayerStop.isPlaying()){
+        /*if(mediaPlayerStop.isPlaying()){
             mediaPlayerStop.stop();
             mediaPlayerStop.release();
             mediaPlayerStop = MediaPlayer.create(getContext(), R.raw.stop_record);
-        }
+        }*/
         startRecordTextView.setText("Recording...");
-        mediaPlayerStart.start();
+        new CountDownTimer(3000, 100) {
+
+            public void onTick(long millisUntilFinished) {
+                Log.i("##milliseconds", ""  + millisUntilFinished);
+                float result = (float)(millisUntilFinished) / 1000.0f;
+                String str = ""  + Math.round( (float)(millisUntilFinished - Math.round(result)) / 10.0f);
+                if(str.length() > 2)
+                    str = str.substring(1);
+                timerTextView.setText(Math.round(result) + ":" + str);
+            }
+    
+            public void onFinish() {
+                timerTextView.setText("03:00");
+                stopRecording(view);
+            }
+        }.start();
+
+        //mediaPlayerStart.start();
     }
 
     private void stopRecording(View view){
@@ -167,19 +188,19 @@ public class ActionsFragment extends Fragment  {
         colorAnimation.cancel();
 
         //play sound
-        if(mediaPlayerStart.isPlaying()){
+        /*if(mediaPlayerStart.isPlaying()){
             mediaPlayerStart.stop();
             mediaPlayerStart.release();
             mediaPlayerStart = MediaPlayer.create(getContext(), R.raw.start_record);
-        }
+        }*/
         startRecordTextView.setText("Record");
-        mediaPlayerStop.start();
+        /*mediaPlayerStop.start();
         mediaPlayerStop.setOnCompletionListener(l -> {
             if(l.isPlaying()){
                 l.stop();
                 l.release();
             }});
-
+        */
         SaveSoundFragment confirmDialog = new SaveSoundFragment();
         confirmDialog.show(Objects.requireNonNull(getFragmentManager()), "saveSoundFragment");
     }

@@ -1,6 +1,7 @@
 package com.alisonproject.android;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class MainActivity extends BaseActivity implements ConnectFragment.OnFrag
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
 //                        mTextMessage.setText(R.string.title_home);
-                        BluetoothConnManager.getInstance().send("Home");
+                        //BluetoothConnManager.getInstance().send("Home");
                         return true;
                     case R.id.navigation_dashboard:
 //                        mTextMessage.setText(R.string.title_dashboard);
@@ -165,7 +166,12 @@ public class MainActivity extends BaseActivity implements ConnectFragment.OnFrag
     @Override
     public void onDialogPositiveClick(SaveSoundFragment dialog, String tag) {
         String colorHex = Integer.toHexString(dialog.selectedColor).substring(2);
-        BluetoothConnManager.getInstance().send("save | " + tag + " | " + colorHex);
+        int color = dialog.selectedColor;
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+        Log.i("###########", "rgb = (" + r + ", " + g + ", " + b + ")" );
+        BluetoothConnManager.getInstance().send("save | " + tag + " | " + r + "," + g + "," + b );
         Toast.makeText(getApplicationContext(), "Sound learned", Toast.LENGTH_SHORT).show();
     }
 
