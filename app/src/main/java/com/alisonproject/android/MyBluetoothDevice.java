@@ -77,8 +77,8 @@ public class MyBluetoothDevice {
         // TODO
         Method getUuidsMethod = null;
         try {
-            getUuidsMethod = BluetoothDevice.class.getDeclaredMethod("getUuids", null);
-            ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(device, null);
+            getUuidsMethod = BluetoothDevice.class.getDeclaredMethod("getUuids", (Class<?>) null);
+            ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(device, (Object) null);
 
             for (ParcelUuid uuid: uuids) {
                 Log.d("##uuid", "UUID: " + uuid.getUuid().toString());
