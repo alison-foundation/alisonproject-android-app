@@ -32,7 +32,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             tools:layout_conversion_absoluteHeight="72dp"
-            tools:layout_conversion_absoluteWidth="72dp" />
+            tools:layout_conversion_absoluteWidth="72dp"
+            android:contentDescription="@string/bluetooth_icon_description"
+            tools:ignore="RtlHardcoded" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -42,7 +44,8 @@
             android:layout_marginLeft="8dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toEndOf="@+id/bluetoothIcon"
-            tools:layout_editor_absoluteY="8dp">
+            tools:layout_editor_absoluteY="8dp"
+            tools:ignore="MissingConstraints,RtlHardcoded">
 
             <LinearLayout
                 android:layout_width="162dp"
@@ -55,7 +58,7 @@
                     android:layout_height="41dp"
                     android:layout_gravity="center|center_vertical"
                     android:gravity="center_vertical"
-                    android:text="Téléphone" />
+                    android:text="@string/detected_device_name" />
 
                 <TextView
                     android:id="@+id/deviceMacTW"
@@ -63,7 +66,7 @@
                     android:layout_height="44dp"
                     android:layout_gravity="bottom"
                     android:gravity="center_vertical"
-                    android:text="00:00:00:00:00" />
+                    android:text="@string/default_bluetooth_ip" />
             </LinearLayout>
 
             <Button

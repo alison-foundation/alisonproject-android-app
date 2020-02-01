@@ -14,6 +14,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="record_sound">Record</string>
-    <string name="save">save</string>
-    <string name="cancel">cancel</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="bluetooth_icon_description">Bluetooth icon</string>
+    <string name="detected_device_name">Téléphone</string>
+    <string name="default_bluetooth_ip">00:00:00:00:00</string>
 </resources>
