@@ -20,32 +20,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginBottom="14dp"
+            android:contentDescription="@string/bluetooth_icon_description"
             android:src="@drawable/ic_bluetooth_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
+            tools:ignore="RtlHardcoded"
             tools:layout_conversion_absoluteHeight="72dp"
-            tools:layout_conversion_absoluteWidth="72dp"
-            android:contentDescription="@string/bluetooth_icon_description"
-            tools:ignore="RtlHardcoded" />
+            tools:layout_conversion_absoluteWidth="72dp" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="286dp"
-            android:layout_height="84dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bluetoothIcon"
-            tools:layout_editor_absoluteY="8dp"
-            tools:ignore="MissingConstraints,RtlHardcoded">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded">
 
             <LinearLayout
                 android:layout_width="162dp"
@@ -75,12 +76,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_vertical"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
                 android:gravity="center|center_vertical"
                 android:text="@string/connect_to_device"
                 android:textColorHighlight="@color/colorAccent"
-                android:textColorLink="@color/colorAccent"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp" />
+                android:textColorLink="@color/colorAccent" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
