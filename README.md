@@ -1,3 +1,5 @@
+![Android CI](https://github.com/alison-foundation/alisonproject-android-app/workflows/Android%20CI/badge.svg?branch=master)
+
 # The Alison Project Android Application
 The android application for the state-of-the-art sound recognition solution designed to help people suffering from hearing impairement or deafness all over the world. 
 More details on our [website](https://alisonproject.ml)
